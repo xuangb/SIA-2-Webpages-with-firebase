@@ -22,9 +22,6 @@ jobs:
       - name: Install dependencies
         run: npm install  # Installs dependencies from package.json
 
-      - name: Build the project (if needed)
-        run: npm run build  # Run this if you have a build script, otherwise, remove this line
-
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
