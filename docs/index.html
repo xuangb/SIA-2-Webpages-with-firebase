@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-<!--[if IE 8 ]><html class="no-js oldie ie8" lang="en"> <![endif]-->
-<!--[if IE 9 ]><html class="no-js oldie ie9" lang="en"> <![endif]-->
-<!--[if (gte IE 9)|!(IE)]><!--><html class="no-js" lang="en"> <!--<![endif]-->
+<html class="no-js" lang="en">
 <head>
 
    <!--- basic page needs
@@ -22,8 +20,17 @@
 
    <!-- script
    ================================================== -->   
-	<script src="js/modernizr.js"></script>
-	<script src="js/pace.min.js"></script>
+    <!-- Firebase App (Core) SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js"></script>
+  <!-- Firebase Analytics SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js"></script>
+   <!-- Firebase App (Core) SDK -->
+   <script src="https://www.gstatic.com/firebasejs/10.1.0/firebase-database.js"></script>
+   <script src="resources/js/index.js"></script>
+   
+	<script src="resources/js/modernizr.js"></script>
+	<script src="resources/js/pace.min.js"></script>
+    
 
    <!-- favicons 
 	================================================== -->
@@ -32,12 +39,6 @@
 </head>
 
 <body id="top">
-
-	<!-- header 
-   ================================================== -->
-   <header>   	
-   </header> <!-- /header -->
-
 	<!-- intro section
    ================================================== -->
    <section id="intro">   
@@ -86,28 +87,32 @@
             </div>
             <div ng-app ng-init="checked = false">
                 <form class="form-signin" action="" method="post" name="form"> 
-                    <label for="username">Username</label>
-                    <input class="form-styling" type="text" name="username" placeholder="" /> 
+                    <label for="username">Fullname</label>
+                    <input class="form-styling" type="text" id="fullname" name="fullname" placeholder="" /> 
 
                     <label for="password">Password</label>
                     <input class="form-styling" type="text" name="password" placeholder="" />
 
                     <div class="btn-animate"> <a class="btn-signin">Login to your account</a> </div>
+                    <div><a id="google-login-btn" class="btn-signin">Login with Google</a></div>
                 </form>
                 <form class="form-signup" action="" method="post" name="form">
                     <label for="fullname">Full name</label>
-                    <input class="form-styling" type="text" name="fullname" placeholder="" />
+                    <input class="form-styling" type="text" id="fullname" name="fullname" placeholder="" />
 
                     <label for="email">Email</label>
-                    <input class="form-styling" type="email" name="email" placeholder="" />
+                    <input class="form-styling" type="email" id="email" name="email" placeholder="" />
+
+                    <label for="number">Phone Number</label>
+                    <input class="form-styling" type="tel" id="tel" name="phoneNumber" pattern="[0-9]{10}" placeholder="" />
 
                     <label for="password">Enter Password</label> 
-                    <input class="form-styling" type="password" name="password" placeholder="" /> 
+                    <input class="form-styling" type="password" id="password" name="password" placeholder="" /> 
 
                     <label for="confirm-password">Confirm password</label> 
-                    <input class="form-styling" type="password" name="confirm-password" placeholder="" /> 
+                    <input class="form-styling" type="password" id="confirm-password" name="confirm-password" placeholder="" /> 
 
-                    <a ng-click="checked = !checked" class="btn-signup">REGISTER</a>
+                    <a ng-click="checked = !checked" class="btn-signup" onclick="register()">REGISTER</a>
                 </form>
                 <div class="success">
                         <div class="successtext">
@@ -189,12 +194,8 @@ $(function() {
     });
 });
 
-
-
-
-
-
     $(function() {
+
         $(".btn-signup").click(function() {
             $(".nav").toggleClass("nav-up");
             $(".form-signup-left").toggleClass("form-signup-down");
