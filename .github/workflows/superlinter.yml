@@ -11,27 +11,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout code
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Step 2: Set up Node.js (to ensure you have the correct version of Node and npm)
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'  # You can specify a version based on your needs
+          node-version: '16'  # Replace with your desired Node.js version
 
-      # Step 3: Install dependencies (equivalent to npm install)
       - name: Install dependencies
-        run: npm install
+        run: npm install  # Installs dependencies from package.json
 
-      # Step 4: Build your project (if needed)
-      - name: Build project (optional)
-        run: npm run build  # You can modify this command based on your project's build script
+      - name: Build the project (if needed)
+        run: npm run build  # Run this if you have a build script, otherwise, remove this line
 
-      # Step 5: Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.SECRET_GITHUB_TOKEN }}
-          publish_dir: ./docs  # Change this to the directory containing your static files
+          publish_dir: ./docs  # Or the folder where your static files are located
