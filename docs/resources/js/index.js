@@ -1,41 +1,55 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider} from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
-import { getDatabase } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-database.js"; // Import Firebase Realtime Database (if needed)
+// import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+// import { getAuth, GoogleAuthProvider} from "https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js";
+// import { getDatabase } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-database.js"; // Import Firebase Realtime Database (if needed)
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDTFxn7j6qomVA59Mu-pK3I--gcr7gvRy0",
-    authDomain: "sia2-firebase.firebaseapp.com",
-    projectId: "sia2-firebase",
-    storageBucket: "sia2-firebase.firebasestorage.app",
-    messagingSenderId: "711179837759",
-    appId: "1:711179837759:web:bfde1b1b8b44df663ff38a",
-    measurementId: "G-1SCQNEMYYY"
-  };
+  apiKey: "AIzaSyDTFxn7j6qomVA59Mu-pK3I--gcr7gvRy0",
+  authDomain: "sia2-firebase.firebaseapp.com",
+  projectId: "sia2-firebase",
+  storageBucket: "sia2-firebase.firebasestorage.app",
+  messagingSenderId: "711179837759",
+  appId: "1:711179837759:web:bfde1b1b8b44df663ff38a",
+  measurementId: "G-1SCQNEMYYY"
+};
 
-const app = initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
 const database = firebase.database();
 
-function register(){
+function register() {
   fullname = document.getElementById("fullname").value;
   email = document.getElementById("email").value;
-  number = document.getElementById("phoneNumber").value;
+  phoneNumber = document.getElementById("phoneNumber").value; // Corrected this line
   password = document.getElementById("password").value;
   confirmPassword = document.getElementById("confirm-password").value;
 
-  if(validate_email(email)==false || validate_password(password, confirmPassword) ==false){
-    alert("Either Email or Password is incorrect");
-    return
+  // Validate inputs
+  if (!validate_email(email)) {
+    alert("Invalid email format.");
+    return;
   }
 
-  if(validate_field(fullname)==false){
-    alert("Name is empty");
-    return
+  const passwordValidationResult = validate_password(password, confirmPassword);
+  if (passwordValidationResult !== "Password is valid.") {
+    alert(passwordValidationResult);
+    return;
   }
 
-  auth.createUserWithEmailAndPassword(email,password)
-    .then(function(){
+  if (!validate_field(fullname)) {
+    alert("Name is empty.");
+    return;
+  }
+
+  if (!validate_phoneNumber(phoneNumber)) {
+    alert("Invalid phone number. Ensure it is numeric and the correct length.");
+    return;
+  }
+
+  // Register user
+  auth
+    .createUserWithEmailAndPassword(email, password)
+    .then(function () {
       var user = auth.currentUser;
       var database_ref = database.ref();
 
@@ -44,43 +58,33 @@ function register(){
         fullname: fullname,
         phoneNumber: phoneNumber,
         last_login: Date.now(),
-      }
-      database_ref.child('users/'+user.uid).set(user_data);
+      };
+      database_ref.child("users/" + user.uid).set(user_data);
 
-      alert("User created successfully");
-
+      alert("User created successfully.");
     })
-    .catch(function(error){
-
-    })
-
-  
+    .catch(function (error) {
+      console.error("Error during registration:", error.message);
+    });
 }
 
-function validate_email(email){
-  expression = /^[^@]+@\w+(\.\w+)+\w$/
-  if(expression.test(email)==true){
-    return true
-  }else{
-    return false
-  }
+function validate_email(email) {
+  const expression = /^[^@]+@\w+(\.\w+)+\w$/;
+  return expression.test(email);
 }
 
 function validate_password(password, confirmPassword) {
-  const minLength = 8; // Minimum length of the password
+  const minLength = 8;
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
 
-  // Check if password and confirm password match
   if (password !== confirmPassword) {
     return "Passwords do not match.";
   }
 
-  // Check if password meets the minimum length requirement
   if (password.length < minLength) {
     return `Password must be at least ${minLength} characters long.`;
   }
 
-  // Check if password meets complexity requirements
   if (!passwordRegex.test(password)) {
     return "Password must include at least one uppercase letter, one lowercase letter, one number, and one special character.";
   }
@@ -88,15 +92,14 @@ function validate_password(password, confirmPassword) {
   return "Password is valid.";
 }
 
-function validate_field(field){
-  if(field == null){
-    return false;
-  }
-  if(field.length <= 0){
-    return false;
-  }else{
-    return true;
-  }
+function validate_field(field) {
+  return field != null && field.length > 0;
+}
+
+// Validate phone number
+function validate_phoneNumber(phoneNumber) {
+  const phoneRegex = /^[0-9]{10,15}$/; // Allows 10 to 15 digits
+  return phoneRegex.test(phoneNumber);
 }
 
 
